@@ -1,0 +1,38 @@
+#membuat model sederhana yang dapat menjelaskan bagaimana pengaruh "num_people" dan "housearea" terhadap "amount_paid"
+library(readr)
+electric_bill <- read_csv("https://storage.googleapis.com/dqlab-dataset/electric_bill.csv")
+model <- lm(amount_paid~num_people+housearea, data=electric_bill)
+model
+
+#membuat model machine learning 
+library(readr)
+library(caret)
+set.seed(123)
+iris <- read_csv("https://storage.googleapis.com/dqlab-dataset/iris.csv")
+trainIndex <- createDataPartition(iris$Species, p=0.8, list=FALSE)
+training_set <- iris[trainIndex,]
+testing_set <- iris[-trainIndex,]
+
+dim(training_set)
+dim(testing_set)
+
+#machine learning model dengan menggunakan Decision tree
+library(caret) #pre-defined 
+library(rpart) #pre-defined
+library(readr) #pre-defined
+set.seed(123)  #pre-defined
+
+suv_data <- read_csv("https://storage.googleapis.com/dqlab-dataset/suv_data.csv")
+trainIndex <- createDataPartition(suv_data$Purchased, p=0.8, list=FALSE)
+training_set <- suv_data[trainIndex,]
+testing_set <- suv_data[-trainIndex,]
+
+#build model with decision tree
+model_dt <- rpart(Purchased~.,data=training_set,method="class")
+predictions_dt <- predict(model_dt, newdata=testing_set, type="class")
+
+#evaluate performance with new data/ testing_set
+testing_purchased <- factor(testing_set$Purchased) #pre-defined 
+#show the evaluation result 
+evaluation_result <- confusionMatrix(predictions_dt, testing_purchased)
+evaluation_result
